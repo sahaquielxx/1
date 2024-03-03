@@ -17,7 +17,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-    public void createUsersTable() throws SQLException {
+    public void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS users(" +
                 "ID BIGINT NOT NULL AUTO_INCREMENT, NAME VARCHAR(100), " +
                 "LASTNAME VARCHAR(100), AGE INT, PRIMARY KEY (ID))";
@@ -40,7 +40,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public void saveUser(String name, String lastName, byte age) throws SQLException {
+    public void saveUser(String name, String lastName, byte age) {
         String sql = "INSERT INTO users (NAME, LASTNAME, AGE) VALUES(?, ?, ?)";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -54,7 +54,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public void removeUserById(long id) throws SQLException {
+    public void removeUserById(long id) {
         String sql = "DELETE FROM users WHERE ID=?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
@@ -65,7 +65,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public List<User> getAllUsers() throws SQLException {
+    public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
 
         String sql = "SELECT ID, NAME, LASTNAME, AGE FROM users";
