@@ -1,11 +1,12 @@
 package jm.task.core.jdbc.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import jm.task.core.jdbc.model.User;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 public class Util {
-    private static volatile Connection connection;
+    private static volatile SessionFactory sessionFactory;
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost:3306/mydbtest";
     private static final String DB_USERNAME = "root";
@@ -14,19 +15,29 @@ public class Util {
     private Util() {
     }
 
-    public static Connection getConnection() {
-        if (connection == null) {
+    public static Session getSession() {
+        if (sessionFactory == null) {
             synchronized (Util.class) {
-                if (connection == null) {
+                if (sessionFactory == null) {
                     try {
-                        Class.forName(DB_DRIVER);
-                        connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
-                    } catch (ClassNotFoundException | SQLException e) {
+                        Configuration configuration = new Configuration();
+                        configuration.setProperty("hibernate.connection.driver_class", DB_DRIVER);
+                        configuration.setProperty("hibernate.connection.url", DB_URL);
+                        configuration.setProperty("hibernate.connection.username", DB_USERNAME);
+                        configuration.setProperty("hibernate.connection.password", DB_PASSWORD);
+
+                        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+                        configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+
+                        configuration.addAnnotatedClass(User.class);
+
+                        sessionFactory = configuration.buildSessionFactory();
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }
             }
         }
-        return connection;
+        return sessionFactory.openSession();
     }
 }
