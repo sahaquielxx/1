@@ -21,7 +21,7 @@ public class Main {
         users.add(new User("Anatoly", "Ivanov", (byte) 39));
 
         for (User us : users) {
-            userService.saveUser(us.getName(), us.getLastName(), (byte) us.getAge());
+            userService.saveUser(us.getName(), us.getLastName(), us.getAge());
             System.out.println("User " + us.getName() + " добавлен в базу данных");
         }
 
